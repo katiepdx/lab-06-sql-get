@@ -91,11 +91,26 @@ describe('app routes', () => {
       };
       const data = await fakeRequest(app)
         .get('/players/1')
-        .expect('Content-Type', /json/);
-        // .expect(200);
+        .expect('Content-Type', /json/)
+        .expect(200);
       expect(data.body).toEqual(expectation);
     });
-  });
 
-  
+    test('POST /players creates a new player', async() => {
+      const newPlayer = {
+        name: 'new player',
+        team: 'new player team',
+        is_active: true,
+        number: 0,
+        league_id: 1
+      };
+
+      const data = await fakeRequest(app)
+        .post('/players')
+        .send(newPlayer)
+        .expect('Content-Type', /json/)
+        .expect(200);
+      expect(data.body).toEqual({ ...newPlayer, id: 6 });
+    });
+  });
 });
