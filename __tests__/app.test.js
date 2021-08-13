@@ -112,5 +112,22 @@ describe('app routes', () => {
         .expect(200);
       expect(data.body).toEqual({ ...newPlayer, id: 6 });
     });
+
+    test('PUT /players/:id updates the player data by id', async() => {
+      const updatedPlayer = {
+        name: 'Sue BIRD',
+        team: 'Seattle STORM',
+        is_active: true,
+        number: 10,
+        league_id: 1
+      };
+
+      const data = await fakeRequest(app)
+        .put('/players/1')
+        .send(updatedPlayer)
+        .expect(200)
+        .expect('Content-Type', /json/);
+      expect(data.body).toEqual({ ...updatedPlayer, id: 1 });
+    });
   });
 });
