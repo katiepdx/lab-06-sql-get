@@ -12,16 +12,19 @@ async function run() {
 
     // run a query to create tables
     await client.query(`
-                CREATE TABLE users (
+                CREATE TABLE leagues (
                     id SERIAL PRIMARY KEY,
+                    league VARCHAR(256) NOT NULL,
                     email VARCHAR(256) NOT NULL,
                     hash VARCHAR(512) NOT NULL
                 );           
-                CREATE TABLE animals (
+                CREATE TABLE players (
                     id SERIAL PRIMARY KEY NOT NULL,
                     name VARCHAR(512) NOT NULL,
-                    cool_factor INTEGER NOT NULL,
-                    owner_id INTEGER NOT NULL REFERENCES users(id)
+                    team VARCHAR(256) NOT NULL,
+                    is_active BOOLEAN NOT NULL,
+                    number INTEGER NOT NULL,
+                    league_id INTEGER NOT NULL REFERENCES leagues(id)
             );
         `);
 
