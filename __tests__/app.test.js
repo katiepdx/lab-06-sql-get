@@ -96,6 +96,14 @@ describe('app routes', () => {
       expect(data.body).toEqual(expectation);
     });
 
+    test('GET /player/:id sends an ERROR status and message if the player does not exist', async() => {
+      const failedGetById = await fakeRequest(app)
+        .get('/players/100')
+        .expect('Content-Type', /json/)
+        .expect(500)
+      expect(failedGetById.body.error).toEqual('Sorry, no player found with the id of 100')
+    })
+
     test('POST /players creates a new player', async() => {
       const newPlayer = {
         name: 'new player',
@@ -130,6 +138,23 @@ describe('app routes', () => {
       expect(data.body).toEqual({ ...updatedPlayer, id: 1 });
     });
 
+    test('PUT /player/:id - sends an ERROR status and message if the player does not exist', async() => {
+      const updatedPlayer = {
+        name: 'Sue BIRD',
+        team: 'Seattle STORM',
+        is_active: true,
+        number: 10,
+        league_id: 1
+      };
+      
+      const failedUpdate = await fakeRequest(app)
+        .put('/players/100')
+        .send(updatedPlayer)
+        .expect(500)
+        .expect('Content-Type', /json/)
+      expect(failedUpdate.body.error).toEqual('Sorry, could not update player 100')
+    })
+
     test('DELETE /players/:id deletes the player by id', async() => {
       const deletedPlayer = await fakeRequest(app)
         .delete('/players/6')
@@ -143,5 +168,12 @@ describe('app routes', () => {
         .expect(500)
       expect(failedRequest.body.error).toEqual('Sorry, no player found with the id of 6')
     });
+
+    test('DELETE /players/:id sends an ERROR status and message if player does not exist', async() => {
+      const failedDelete = await fakeRequest(app)
+        .delete('/players/100')
+        .expect(500)
+      expect(failedDelete.body.error).toEqual('Sorry, could not delete player 100. Player may not exist in database.')
+    })
   });
 });
