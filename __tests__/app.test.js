@@ -129,5 +129,19 @@ describe('app routes', () => {
         .expect('Content-Type', /json/);
       expect(data.body).toEqual({ ...updatedPlayer, id: 1 });
     });
+
+    test('DELETE /players/:id deletes the player by id', async() => {
+      const deletedPlayer = await fakeRequest(app)
+        .delete('/players/6')
+        .expect(200)
+        .expect('Content-Type', /json/);
+      
+      expect(deletedPlayer.body.id).toEqual(6);
+
+      const failedRequest = await fakeRequest(app)
+        .get('/players/6')
+        .expect(500)
+      expect(failedRequest.body.error).toEqual('Sorry, no player found with the id of 6')
+    });
   });
 });
